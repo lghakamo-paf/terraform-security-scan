@@ -22,6 +22,10 @@ inputs:
   tfsec_output_file:
     description: 'The name of the output file'
     required: false
+  tfsec_soft_fail:
+    description: 'Runs checks but suppresses error code'
+    required: false
+    default: false
 runs:
   using: 'docker'
   image: './Dockerfile'
