@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# determine if failing quietly in case of findings
+if [ "${INPUT_TFSEC_SOFT_FAIL}" == "true" ]; then
+  TFSEC_SOFT_FAIL="--soft-fail"
+else
+  TFSEC_SOFT_FAIL=""
+fi
+
 #Select the output format
 if [ "${TFSEC_OUTPUT_FILE}" != "" ]; then
   TFSEC_FORMAT="-f ${TFSEC_OUTPUT_FILE}"
@@ -29,9 +36,9 @@ else
 fi
 
 if [[ -n "$INPUT_TFSEC_EXCLUDE" ]]; then
-  TFSEC_OUTPUT=$(/go/bin/tfsec ${TFSEC_WORKING_DIR} --no-colour -e "${INPUT_TFSEC_EXCLUDE}" "${TFSEC_FORMAT}" "${TFSEC_FILE}")
+  TFSEC_OUTPUT=$(/go/bin/tfsec ${TFSEC_WORKING_DIR} --no-colour ${TFSEC_SOFT_FAIL} -e "${INPUT_TFSEC_EXCLUDE}" "${TFSEC_FORMAT}" "${TFSEC_FILE}")
 else
-  TFSEC_OUTPUT=$(/go/bin/tfsec ${TFSEC_WORKING_DIR} --no-colour "${TFSEC_FORMAT}" "${TFSEC_FILE}")
+  TFSEC_OUTPUT=$(/go/bin/tfsec ${TFSEC_WORKING_DIR} --no-colour ${TFSEC_SOFT_FAIL} "${TFSEC_FORMAT}" "${TFSEC_FILE}")
 fi
 TFSEC_EXITCODE=${?}
 
@@ -52,7 +59,7 @@ else
   TFSEC_COMMENT=0
 fi
 
-if [ "${GITHUB_EVENT_NAME}" == "pull_request" ] && [ -n "${GITHUB_TOKEN}" ] && [ "${TFSEC_COMMENT}" == "1" ] && [ "${TFSEC_EXITCODE}" != "0" ]; then
+if [ "${GITHUB_EVENT_NAME}" == "pull_request" ] && [ -n "${GITHUB_TOKEN}" ] && [ "${TFSEC_COMMENT}" == "1" ]; then
     COMMENT="#### \`Terraform Security Scan\` ${TFSEC_STATUS}
 <details><summary>Show Output</summary>
 

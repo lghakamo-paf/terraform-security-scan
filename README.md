@@ -13,6 +13,7 @@ The action requires the https://github.com/actions/checkout before to download t
 * `tfsec_version` - (Optional) Specify the version of tfsec to install. Defaults to the latest
 * `tfsec_output_format` - (Optional) The output format: default, json, csv, checkstyle, junit, sarif (check `tfsec` for an extensive list)
 * `tfsec_output_file` - (Optional) The name of the output file
+* `tfsec_soft_fail` - (Optional) Runs checks but suppresses error code. Defaults to `false`.
     
 ## Outputs
 
